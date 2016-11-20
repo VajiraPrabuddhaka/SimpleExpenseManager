@@ -28,22 +28,9 @@ public class InDBDemoExpenseManager extends ExpenseManager {
         SQLiteDatabase mydatabase = con.openOrCreateDatabase("140254T", con.MODE_PRIVATE, null);
 
         //create two tables
-        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Account(" +
-                "Account_no VARCHAR PRIMARY KEY," +
-                "Bank VARCHAR," +
-                "Holder VARCHAR," +
-                "Initial_amt REAL" +
-                " );");
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Account(account_no text PRIMARY KEY, bank_name text,Holder text,balance REAL);");
 
-
-        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS TransactionLog(" +
-                "Transaction_id INTEGER PRIMARY KEY," +
-                "Account_no VARCHAR," +
-                "Type INT," +
-                "Amt REAL," +
-                "Log_date DATE," +
-                "FOREIGN KEY (Account_no) REFERENCES Account(Account_no)" +
-                ");");
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS TransactionLog(account_no text,Type INTEGER,amount REAL,Log_date DATE);");
 
         AccountDAO inDBAccountDAO = new InDBAccountDAO(mydatabase);
         setAccountsDAO(inDBAccountDAO);

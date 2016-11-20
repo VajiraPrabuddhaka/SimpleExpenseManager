@@ -38,22 +38,16 @@ public class InDBAccountDAO implements AccountDAO {
 
     @Override
     public List<String> getAccountNumbersList() {
-        //To loop through results, we first acquire a cursor to the result set.
-        //Cursor is just an iterator
-        Cursor resultSet = db.rawQuery("SELECT Account_no FROM Account",null);
-        //We point the cursor to the first record before looping
 
-        //Initialize a list to store the relevant data
-        List<String> accounts = new ArrayList<String>();
-
-        //Loop the iterator and add data to the List
-        if(resultSet.moveToFirst()) {
-            do {
-                accounts.add(resultSet.getString(resultSet.getColumnIndex("Account_no")));
-            } while (resultSet.moveToNext());
+        ArrayList<String> data=new ArrayList<String>();
+        Cursor cursor = db.query("Account", new String[]{"account_no"},null, null, null, null, null);
+        String fieldToAdd=null;
+        while(cursor.moveToNext()){
+            fieldToAdd=cursor.getString(0);
+            data.add(fieldToAdd);
         }
-        //Return the list
-        return accounts;
+        cursor.close();  // dont forget to close the cursor after operation done
+        return data;
     }
 
     @Override
@@ -63,10 +57,10 @@ public class InDBAccountDAO implements AccountDAO {
 
         if(resultSet.moveToFirst()) {
             do {
-                Account account = new Account(resultSet.getString(resultSet.getColumnIndex("Account_no")),
-                        resultSet.getString(resultSet.getColumnIndex("Bank")),
+                Account account = new Account(resultSet.getString(resultSet.getColumnIndex("account_no")),
+                        resultSet.getString(resultSet.getColumnIndex("bank_name")),
                         resultSet.getString(resultSet.getColumnIndex("Holder")),
-                        resultSet.getDouble(resultSet.getColumnIndex("Initial_amt")));
+                        resultSet.getDouble(resultSet.getColumnIndex("balance")));
                 accounts.add(account);
             } while (resultSet.moveToNext());
         }
@@ -76,15 +70,15 @@ public class InDBAccountDAO implements AccountDAO {
 
     @Override
     public Account getAccount(String accountNo) throws InvalidAccountException {
-        Cursor resultSet = db.rawQuery("SELECT * FROM Account WHERE Account_no = " + accountNo,null);
+        Cursor resultSet = db.rawQuery("SELECT * FROM Account WHERE account_no = " + accountNo,null);
         Account account = null;
 
         if(resultSet.moveToFirst()) {
             do {
-                account = new Account(resultSet.getString(resultSet.getColumnIndex("Account_no")),
-                        resultSet.getString(resultSet.getColumnIndex("Bank")),
+                account = new Account(resultSet.getString(resultSet.getColumnIndex("account_no")),
+                        resultSet.getString(resultSet.getColumnIndex("bank_name")),
                         resultSet.getString(resultSet.getColumnIndex("Holder")),
-                        resultSet.getDouble(resultSet.getColumnIndex("Initial_amt")));
+                        resultSet.getDouble(resultSet.getColumnIndex("balance")));
             } while (resultSet.moveToNext());
         }
 
@@ -93,37 +87,24 @@ public class InDBAccountDAO implements AccountDAO {
 
     @Override
     public void addAccount(Account account) {
-        //For inserting we use prepared statements
-        //First we prepare the sql with the variables to be hold
-        String sql = "INSERT INTO Account (Account_no,Bank,Holder,Initial_amt) VALUES (?,?,?,?)";
-        SQLiteStatement statement = db.compileStatement(sql);
 
-
-        //Bind the values correctly. First holder is index 1
-        statement.bindString(1, account.getAccountNo());
-        statement.bindString(2, account.getBankName());
-        statement.bindString(3, account.getAccountHolderName());
-        statement.bindDouble(4, account.getBalance());
-
-        //Execute it
-        statement.executeInsert();
-
+        ContentValues content = new ContentValues();
+        content.put("account_no",account.getAccountNo());
+        content.put("bank_name", account.getBankName());
+        content.put("Holder",account.getAccountHolderName());
+        content.put("balance", account.getBalance());
+        db.insert("Account",null, content);
 
     }
 
     @Override
     public void removeAccount(String accountNo) throws InvalidAccountException {
-        String sql = "DELETE FROM Account WHERE Account_no = ?";
-        SQLiteStatement statement = db.compileStatement(sql);
-
-        statement.bindString(1,accountNo);
-
-        statement.executeUpdateDelete();
+        db.execSQL("delete from "+"Account"+" where account_no=" + accountNo);
     }
 
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
-        String sql = "UPDATE Account SET Initial_amt = Initial_amt + ?";
+        String sql = "UPDATE Account SET balance = balance + ?";
         SQLiteStatement statement = db.compileStatement(sql);
         if(expenseType == ExpenseType.EXPENSE){
             statement.bindDouble(1,-amount);

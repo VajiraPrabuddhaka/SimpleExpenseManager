@@ -34,7 +34,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="6ecf28c55193c72b9cf3f9cc8dcbc5ee5586ec78">
+        sha1="1447d01a263739f05923d6b7fdd6ad89339216d9">
         <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\instant-run_a44dc68ad5611c5427021ff08f8729f53c6a08d5.jar" />
     </item>
     <item
@@ -43,7 +43,7 @@
         jumboMode="true"
         optimize="true"
         revision="24.0.2"
-        sha1="b3be040008522919188da5adb86987dc67bf72fb">
+        sha1="73795a92e82e85533bfdaa03c411745421b92448">
         <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\instant-run-bootstrap_b2e93b566be6b916bf3e139d6c2b8e77203bb16b.jar" />
     </item>
     <item

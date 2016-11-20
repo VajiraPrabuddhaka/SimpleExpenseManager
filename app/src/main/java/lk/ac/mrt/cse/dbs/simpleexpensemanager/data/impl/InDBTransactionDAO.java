@@ -32,7 +32,7 @@ public class InDBTransactionDAO implements TransactionDAO {
 
     @Override
     public void logTransaction(Date date, String accountNo, ExpenseType expenseType, double amount) {
-        String sql = "INSERT INTO TransactionLog (Account_no,Type,Amt,Log_date) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO TransactionLog (account_no,Type,amount,Log_date) VALUES (?,?,?,?)";
         SQLiteStatement statement = db.compileStatement(sql);
 
         statement.bindString(1,accountNo);
@@ -51,9 +51,9 @@ public class InDBTransactionDAO implements TransactionDAO {
         if(resultSet.moveToFirst()) {
             do{
                 Transaction t = new Transaction(new Date(resultSet.getLong(resultSet.getColumnIndex("Log_date"))),
-                        resultSet.getString(resultSet.getColumnIndex("Account_no")),
+                        resultSet.getString(resultSet.getColumnIndex("account_no")),
                         (resultSet.getInt(resultSet.getColumnIndex("Type")) == 0) ? ExpenseType.EXPENSE : ExpenseType.INCOME,
-                        resultSet.getDouble(resultSet.getColumnIndex("Amt")));
+                        resultSet.getDouble(resultSet.getColumnIndex("amount")));
                 transactions.add(t);
             }while (resultSet.moveToNext());
         }
@@ -68,9 +68,9 @@ public class InDBTransactionDAO implements TransactionDAO {
         if(resultSet.moveToFirst()) {
             do {
                 Transaction t = new Transaction(new Date(resultSet.getLong(resultSet.getColumnIndex("Log_date"))),
-                        resultSet.getString(resultSet.getColumnIndex("Account_no")),
+                        resultSet.getString(resultSet.getColumnIndex("account_no")),
                         (resultSet.getInt(resultSet.getColumnIndex("Type")) == 0) ? ExpenseType.EXPENSE : ExpenseType.INCOME,
-                        resultSet.getDouble(resultSet.getColumnIndex("Amt")));
+                        resultSet.getDouble(resultSet.getColumnIndex("amount")));
                 transactions.add(t);
             } while (resultSet.moveToNext());
         }

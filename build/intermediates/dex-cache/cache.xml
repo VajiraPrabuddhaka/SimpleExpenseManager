@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
+        <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\com.android.support-recyclerview-v7-23.1.1_7f50433e6b1d11ffeead300aab13a87697eaee30.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\exploded-aar\com.android.support\design\23.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="379471b2bd17d9737c050345c08e8c7d16589784">
+        <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\com.android.support-design-23.1.1_16b31f18525ff8a8a55da2eee75ec783e239108f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-23.1.1_c953353e4087acbb4ac60240b788131574843947.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="d295744ae42709727b31e0a6b8ef29204ac6a756">
+        <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\instant-run_a44dc68ad5611c5427021ff08f8729f53c6a08d5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="615409022f9b018dbb3e0a987b1f3306f7dd4766">
+        <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\instant-run-bootstrap_b2e93b566be6b916bf3e139d6c2b8e77203bb16b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\support-annotations-23.1.1_05357401d5680223c147bcf6a142a9e5fdc6118e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-23.1.1_60823bb1f8f51897417b711bcb8ebd0d384cd4dc.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="24.0.2"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="E:\AndroidProjects\SimpleExpenseManager\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1_0ebfe6acb6b027643d5f64984f884fbd2162e623.jar" />
+    </item>
+
+</items>

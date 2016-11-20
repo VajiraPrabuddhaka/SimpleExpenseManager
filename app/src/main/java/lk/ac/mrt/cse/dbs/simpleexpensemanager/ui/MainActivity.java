@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         /***  Begin generating dummy data for In-Memory implementation  ***/
 
-
+        //begin creating demo instance on database implementation of simple expense manager
         try {
             expenseManager = new InDBDemoExpenseManager(this);
         } catch (ExpenseManagerException e) {

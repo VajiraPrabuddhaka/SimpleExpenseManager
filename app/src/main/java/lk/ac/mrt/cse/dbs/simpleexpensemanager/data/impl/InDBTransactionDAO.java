@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,41 +20,32 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
  * Created by Vajira Prabuddhaka on 11/19/2016.
  */
 
-public class InDBTransactionDAO extends SQLiteOpenHelper implements TransactionDAO {
-    public static final String DATABASE_NAME = "ExpMgr.db";
+public class InDBTransactionDAO implements TransactionDAO {
+    //public static final String DATABASE_NAME = "ExpMgr.db";
 
+    private SQLiteDatabase db;
 
-    public InDBTransactionDAO(Context context) {
-        super(context,DATABASE_NAME,null, 1);
+    public InDBTransactionDAO(SQLiteDatabase database) {
+        this.db = database;
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table TransactionLog " + "(date text, account_no text, type text, amount real)");
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS TransactionLog");
-        onCreate(db);
-    }
 
     @Override
     public void logTransaction(Date date, String accountNo, ExpenseType expenseType, double amount) {
-        Transaction transaction = new Transaction(date, accountNo, expenseType, amount);
-        ContentValues content = new ContentValues();
-        content.put("date",date.toString());
-        content.put("accountNo", accountNo);
-        content.put("type",expenseType.toString());
-        content.put("amount", amount);
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert("TransactionLog",null,content);
+        String sql = "INSERT INTO TransactionLog (Account_no,Type,Amt,Log_date) VALUES (?,?,?,?)";
+        SQLiteStatement statement = db.compileStatement(sql);
+
+        statement.bindString(1,accountNo);
+        statement.bindLong(2,(expenseType == ExpenseType.EXPENSE) ? 0 : 1);
+        statement.bindDouble(3,amount);
+        statement.bindLong(4,date.getTime());
+
+        statement.executeInsert();
     }
 
     @Override
     public List<Transaction> getAllTransactionLogs() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor resultSet = db.rawQuery("select * from TransactionLog",null);
+        Cursor resultSet = db.rawQuery("SELECT * FROM TransactionLog",null);
         List<Transaction> transactions = new ArrayList<Transaction>();
 
         if(resultSet.moveToFirst()) {
@@ -70,8 +62,7 @@ public class InDBTransactionDAO extends SQLiteOpenHelper implements TransactionD
 
     @Override
     public List<Transaction> getPaginatedTransactionLogs(int limit) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor resultSet = db.rawQuery("select * from TransactionLog limit " + limit,null);
+        Cursor resultSet = db.rawQuery("SELECT * FROM TransactionLog LIMIT " + limit,null);
         List<Transaction> transactions = new ArrayList<Transaction>();
 
         if(resultSet.moveToFirst()) {

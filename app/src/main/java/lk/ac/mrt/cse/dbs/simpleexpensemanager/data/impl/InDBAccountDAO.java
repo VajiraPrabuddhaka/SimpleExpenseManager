@@ -21,7 +21,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by Vajira Prabuddhaka on 11/18/2016.
  */
 
-public class InDBAccountDAO extends SQLiteOpenHelper implements AccountDAO {
+public class InDBAccountDAO implements AccountDAO {
     public static final String DATABASE_NAME = "ExpMgr.db";
     public static final String TABLE_NAME = "Account";
     public static final String COL_1 = "account_no";
@@ -29,74 +29,101 @@ public class InDBAccountDAO extends SQLiteOpenHelper implements AccountDAO {
     public static final String COL_3 = "accountHolderName";
     public static final String COL_4 = "balance";
 
+    private SQLiteDatabase db;
 
-    public InDBAccountDAO(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+    public InDBAccountDAO(SQLiteDatabase db) {
+        this.db = db;
         //SQLiteDatabase mydatabase = openOrCreateDatabase("your database name",MODE_PRIVATE,null);
     }
 
     @Override
     public List<String> getAccountNumbersList() {
-        ArrayList<String> data=new ArrayList<String>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query("Account", new String[]{"account_no"},null, null, null, null, null);
-        String fieldToAdd=null;
-        while(cursor.moveToNext()){
-            fieldToAdd=cursor.getString(0);
-            data.add(fieldToAdd);
+        //To loop through results, we first acquire a cursor to the result set.
+        //Cursor is just an iterator
+        Cursor resultSet = db.rawQuery("SELECT Account_no FROM Account",null);
+        //We point the cursor to the first record before looping
+
+        //Initialize a list to store the relevant data
+        List<String> accounts = new ArrayList<String>();
+
+        //Loop the iterator and add data to the List
+        if(resultSet.moveToFirst()) {
+            do {
+                accounts.add(resultSet.getString(resultSet.getColumnIndex("Account_no")));
+            } while (resultSet.moveToNext());
         }
-        cursor.close();  // dont forget to close the cursor after operation done
-        return data;
+        //Return the list
+        return accounts;
     }
 
     @Override
     public List<Account> getAccountsList() {
-        ArrayList<Account> data=new ArrayList<Account>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query("Account",new String[]{"account_no","bank_name","accountHolderName","balance"},null,null,null,null,null);
-        while(cursor.moveToNext()){
-            Account acc = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),Double.valueOf(cursor.getString(3)));
-            data.add(acc);
+        Cursor resultSet = db.rawQuery("SELECT * FROM Account",null);
+        List<Account> accounts = new ArrayList<Account>();
+
+        if(resultSet.moveToFirst()) {
+            do {
+                Account account = new Account(resultSet.getString(resultSet.getColumnIndex("Account_no")),
+                        resultSet.getString(resultSet.getColumnIndex("Bank")),
+                        resultSet.getString(resultSet.getColumnIndex("Holder")),
+                        resultSet.getDouble(resultSet.getColumnIndex("Initial_amt")));
+                accounts.add(account);
+            } while (resultSet.moveToNext());
         }
-        return data;
+
+        return accounts;
     }
 
     @Override
     public Account getAccount(String accountNo) throws InvalidAccountException {
-        //need to add validation on account existence
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM Account WHERE account_no="+accountNo, null);
-        Account account = new Account(cursor.getString(0),cursor.getColumnName(1),cursor.getColumnName(2),Double.valueOf(cursor.getString(3)));
+        Cursor resultSet = db.rawQuery("SELECT * FROM Account WHERE Account_no = " + accountNo,null);
+        Account account = null;
+
+        if(resultSet.moveToFirst()) {
+            do {
+                account = new Account(resultSet.getString(resultSet.getColumnIndex("Account_no")),
+                        resultSet.getString(resultSet.getColumnIndex("Bank")),
+                        resultSet.getString(resultSet.getColumnIndex("Holder")),
+                        resultSet.getDouble(resultSet.getColumnIndex("Initial_amt")));
+            } while (resultSet.moveToNext());
+        }
+
         return account;
     }
 
     @Override
-    public boolean addAccount(Account account) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues content = new ContentValues();
-        content.put("account_no",account.getAccountNo());
-        content.put("bank_name", account.getBankName());
-        content.put("accountHolderName",account.getAccountHolderName());
-        content.put("balance", account.getBalance());
-        long result = db.insert("Account",null, content);
-        if (result == -1){
-            return false;
-        }
-        else {
-            return true;
-        }
+    public void addAccount(Account account) {
+        //For inserting we use prepared statements
+        //First we prepare the sql with the variables to be hold
+        String sql = "INSERT INTO Account (Account_no,Bank,Holder,Initial_amt) VALUES (?,?,?,?)";
+        SQLiteStatement statement = db.compileStatement(sql);
+
+
+        //Bind the values correctly. First holder is index 1
+        statement.bindString(1, account.getAccountNo());
+        statement.bindString(2, account.getBankName());
+        statement.bindString(3, account.getAccountHolderName());
+        statement.bindDouble(4, account.getBalance());
+
+        //Execute it
+        statement.executeInsert();
+
+
     }
 
     @Override
     public void removeAccount(String accountNo) throws InvalidAccountException {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from "+"Account"+" where account_no=" + accountNo);
+        String sql = "DELETE FROM Account WHERE Account_no = ?";
+        SQLiteStatement statement = db.compileStatement(sql);
+
+        statement.bindString(1,accountNo);
+
+        statement.executeUpdateDelete();
     }
 
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
         String sql = "UPDATE Account SET Initial_amt = Initial_amt + ?";
-        SQLiteDatabase db = this.getWritableDatabase();
         SQLiteStatement statement = db.compileStatement(sql);
         if(expenseType == ExpenseType.EXPENSE){
             statement.bindDouble(1,-amount);
@@ -107,16 +134,4 @@ public class InDBAccountDAO extends SQLiteOpenHelper implements AccountDAO {
         statement.executeUpdateDelete();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        //create a table for store account data
-        //create table contacts " +"(id integer primary key, name text,phone text,email text, street text,place text)
-        db.execSQL("create table Account " + "(account_no text primary key, bank_name text, accountHolderName text, balance real)");
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS Account");
-        onCreate(db);
-    }
 }

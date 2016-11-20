@@ -57,9 +57,8 @@ public class InMemoryAccountDAO implements AccountDAO {
     }
 
     @Override
-    public boolean addAccount(Account account) {
+    public void addAccount(Account account) {
         accounts.put(account.getAccountNo(), account);
-        return true;
     }
 
     @Override

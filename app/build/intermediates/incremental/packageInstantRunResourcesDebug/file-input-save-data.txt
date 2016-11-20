@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sun Nov 20 14:44:50 IST 2016
+#Sun Nov 20 17:26:02 IST 2016
 175.set=ANDROID_RESOURCE
 122.file=E\:\\AndroidProjects\\SimpleExpenseManager\\app\\build\\intermediates\\res\\resources-debug.ap_\\res\\drawable\\abc_item_background_holo_dark.xml
 60.set=ANDROID_RESOURCE
